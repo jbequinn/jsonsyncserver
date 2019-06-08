@@ -1,0 +1,182 @@
+{
+  "last_sync_ts": 1537036339,
+  "time_delta_ms": -15,
+  "changes": {
+    "items": [
+			{
+				"id": "801244036F944E7D808F5F157EED93B0",
+				"sync_id": "801244036F944E7D808F5F157EED93B0",
+				"title": "Prepare vacation",
+				"title_ts": 1525116953,
+				"note": "- Buy plane tickets\n- Book hotel\nx Look for summer clothes\n- Pack",
+				"note_ts": 1534193473,
+				"list": "i",
+				"list_ts": null,
+				"type": "a",
+				"type_ts": null,
+				"start_date": null,
+				"start_date_ts": null,
+				"time": null,
+				"time_ts": null,
+				"energy": null,
+				"energy_ts": null,
+				"schedule": null,
+				"schedule_ts": null,
+				"contact_id": null,
+				"contact_id_ts": null,
+				"parent_id": null,
+				"parent_id_ts": null,
+				"due_date": null,
+				"due_date_ts": null,
+				"is_focused": 0,
+				"is_focused_ts": 0,
+				"completed_on": 1535879706,
+				"completed_on_ts": null,
+				"position_global": 7,
+				"position_global_ts": 1535879706,
+				"position_parent": null,
+				"position_parent_ts": null,
+				"position_child": null,
+				"position_child_ts": null,
+				"position_focus": null,
+				"position_focus_ts": null,
+				"num_parallel_actions": null,
+				"num_parallel_actions_ts": null,
+				"tags_changed_ts": 1525118769,
+				"changed_ts": 1535879706,
+				"created_on": 1525116953,
+				"recurrent_task_id": null,
+				"repeated_on": null,
+				"tags": [
+					{
+						"id": "5D1204D188F6489799876DAB2053978E",
+						"title": "software_upgrades",
+						"title_ts": null,
+						"color": null,
+						"color_ts": null,
+						"type": "l",
+						"type_ts": null,
+						"created_on": 1525118740,
+						"changed_ts": 1525118740
+					}
+				]
+			},
+			{
+				"id": "911244036F944E7D808F5F157EED93E6",
+				"sync_id": "911244036F944E7D808F5F157EED93E6",
+				"title": "test task 01",
+				"title_ts": 1525116953,
+				"note": "- some notes",
+				"note_ts": 1534193473,
+				"list": "i",
+				"list_ts": null,
+				"type": "a",
+				"type_ts": null,
+				"start_date": null,
+				"start_date_ts": null,
+				"time": null,
+				"time_ts": null,
+				"energy": null,
+				"energy_ts": null,
+				"schedule": null,
+				"schedule_ts": null,
+				"contact_id": null,
+				"contact_id_ts": null,
+				"parent_id": null,
+				"parent_id_ts": null,
+				"due_date": null,
+				"due_date_ts": null,
+				"is_focused": 0,
+				"is_focused_ts": 0,
+				"completed_on": null,
+				"completed_on_ts": 1545879704,
+				"position_global": 7,
+				"position_global_ts": 1535879706,
+				"position_parent": null,
+				"position_parent_ts": null,
+				"position_child": null,
+				"position_child_ts": null,
+				"position_focus": null,
+				"position_focus_ts": null,
+				"num_parallel_actions": null,
+				"num_parallel_actions_ts": null,
+				"tags_changed_ts": 1525118769,
+				"changed_ts": 1545879706,
+				"created_on": 1525116953,
+				"recurrent_task_id": null,
+				"repeated_on": null,
+				"tags": [
+					{
+						"id": "5D1204D188F6489799876DAB2053978E",
+						"title": "software_upgrades",
+						"title_ts": null,
+						"color": null,
+						"color_ts": null,
+						"type": "l",
+						"type_ts": null,
+						"created_on": 1525118740,
+						"changed_ts": 1525118740
+					}
+				]
+			}
+    ],
+    "tags": [],
+    "deletions": [
+      {
+        "sync_id": "57131DF196014ED0991C85777528D709",
+        "ts": 1537130187,
+        "entity_type": "i"
+      },
+      {
+        "sync_id": "C20F99A3ADBB472B925EA405BF8EA6F6",
+        "ts": 1537130187,
+        "entity_type": "i"
+      },
+      {
+        "sync_id": "CA092A642AE646FE86B1A834E34CB0831536271200",
+        "ts": 1537130187,
+        "entity_type": "i"
+      },
+      {
+        "sync_id": "CA092A642AE646FE86B1A834E34CB0831530914400",
+        "ts": 1537130187,
+        "entity_type": "i"
+      },
+      {
+        "sync_id": "CA092A642AE646FE86B1A834E34CB0831525644000",
+        "ts": 1537130187,
+        "entity_type": "i"
+      },
+      {
+        "sync_id": "CA092A642AE646FE86B1A834E34CB0831533592800",
+        "ts": 1537130187,
+        "entity_type": "i"
+      },
+      {
+        "sync_id": "CA092A642AE646FE86B1A834E34CB0831528322400",
+        "ts": 1537130187,
+        "entity_type": "i"
+      },
+      {
+        "sync_id": "D80E680159AD455DA774EA07E9229628",
+        "ts": 1537130187,
+        "entity_type": "i"
+      },
+      {
+        "sync_id": "DE1CB04F933E48F483A2FF278EC9E0EE",
+        "ts": 1537130245,
+        "entity_type": "i"
+      },
+      {
+        "sync_id": "6C555265FB9041E4A471A050B14250FE",
+        "ts": 1537130245,
+        "entity_type": "i"
+      },
+      {
+        "sync_id": "B4771710483541B2B3DA1BF2728524E6",
+        "ts": 1537130245,
+        "entity_type": "i"
+      }
+    ]
+  }
+}
