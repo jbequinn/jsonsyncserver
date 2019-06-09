@@ -2,7 +2,7 @@ package com.jbequinn.jsonsyncserver.infrastructure.service;
 
 import com.jbequinn.jsonsyncserver.infrastructure.repository.ChangesDto;
 import com.jbequinn.jsonsyncserver.infrastructure.repository.MongoRepository;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.flogger.Flogger;
 import org.springframework.stereotype.Service;
 
 import javax.json.JsonObject;
@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 
+import static com.google.common.flogger.LazyArgs.lazy;
 import static com.jbequinn.jsonsyncserver.infrastructure.service.JsonAccessor.getLongValueOrZero;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
@@ -18,7 +19,7 @@ import static java.util.stream.Collectors.toMap;
 import static javax.json.Json.createObjectBuilder;
 
 @Service
-@Slf4j
+@Flogger
 public class JsonSyncServerService {
 	private final MongoRepository repository;
 	private final JsonObjectMerger merger;
@@ -29,10 +30,8 @@ public class JsonSyncServerService {
 	}
 
 	public JsonObject sync(JsonObject jsonObject) {
-		if (log.isTraceEnabled()) {
-			log.trace("request:");
-			log.trace(jsonObject.toString());
-		}
+		log.atFinest()
+				.log("Request body: %s", lazy(() -> jsonObject));
 
 		var lastSync = getLongValueOrZero(jsonObject, "last_sync_ts");
 
@@ -78,10 +77,8 @@ public class JsonSyncServerService {
 				.add("time_delta_ms", getLongValueOrZero(jsonObject, "time_delta_ms"))
 				.build();
 
-		if (log.isTraceEnabled()) {
-			log.trace("response:");
-			log.trace(response.toString());
-		}
+		log.atFinest()
+				.log("Response body: %s", lazy(() -> response));
 
 		return response;
 	}

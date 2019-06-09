@@ -1,14 +1,14 @@
 package com.jbequinn.jsonsyncserver.infrastructure.security;
 
 import com.jbequinn.jsonsyncserver.JsonSyncServerProperties;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.flogger.Flogger;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
 import java.util.Optional;
 
-@Slf4j
+@Flogger
 public class TokenAuthenticationProvider implements AuthenticationProvider {
   private final JsonSyncServerProperties properties;
 
@@ -22,12 +22,12 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
       .map(Object::toString)
       .orElse(null);
 
-    log.debug("Authenticating key");
+    log.atFine().log("Authenticating key");
     if (!properties.getKey().equals(key)) {
-      log.debug("Wrong authentication key");
+			log.atFine().log("Wrong authentication key");
       return null;
     } else {
-      log.debug("Authentication sucessful");
+			log.atFine().log("Authentication sucessful");
       return authentication;
     }
   }

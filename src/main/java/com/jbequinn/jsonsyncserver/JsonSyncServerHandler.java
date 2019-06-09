@@ -2,7 +2,7 @@ package com.jbequinn.jsonsyncserver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jbequinn.jsonsyncserver.infrastructure.service.JsonSyncServerService;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.flogger.Flogger;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.function.ServerRequest;
@@ -13,8 +13,8 @@ import java.time.Instant;
 
 import static org.springframework.web.servlet.function.ServerResponse.ok;
 
-@Slf4j
 @Component
+@Flogger
 public class JsonSyncServerHandler {
 	private final JsonSyncServerService jsonSyncServerService;
 	private final ObjectMapper objectMapper;
@@ -25,8 +25,9 @@ public class JsonSyncServerHandler {
 	}
 
 	ServerResponse handlePushFile(ServerRequest serverRequest) throws Exception {
-		log.trace("-- calling push: {}", serverRequest.servletRequest()
-				.getRequestURL().append('?').append(serverRequest.servletRequest().getQueryString()));
+		log.atFinest()
+				.log("Push invoked: %s", serverRequest.servletRequest().getRequestURL().append('?')
+						.append(serverRequest.servletRequest().getQueryString()));
 
 		jsonSyncServerService.saveAllItemsTagsAndDeletions(
 				objectMapper.readValue(serverRequest.servletRequest().getInputStream(), JsonObject.class)
@@ -36,7 +37,8 @@ public class JsonSyncServerHandler {
 	}
 
 	ServerResponse handlePullFile(ServerRequest serverRequest) throws Exception {
-		log.trace("-- calling pull");
+		log.atFinest()
+				.log("Pull invoked");
 
 		return ok()
 				.contentType(MediaType.APPLICATION_JSON)
@@ -44,19 +46,21 @@ public class JsonSyncServerHandler {
 	}
 
 	ServerResponse handleGetTime(ServerRequest serverRequest) {
-		log.trace("-- calling time: {}", serverRequest.servletRequest().getRequestURL().append('?')
-				.append(serverRequest.servletRequest().getQueryString()));
+		log.atFinest()
+				.log("Time invoked: %s", serverRequest.servletRequest().getRequestURL().append('?')
+						.append(serverRequest.servletRequest().getQueryString()));
 
 		long epochMilli = Instant.now().toEpochMilli();
-		log.trace("current time: {} ms", epochMilli);
+		log.atFinest().log("current time: %s ms", epochMilli);
 		return ok()
 				.contentType(MediaType.APPLICATION_JSON)
 				.body("{\"server_time_ms\": " + epochMilli + " }");
 	}
 
 	ServerResponse handleSyncJson(ServerRequest serverRequest) throws Exception {
-		log.trace("-- calling sync: {}", serverRequest.servletRequest().getRequestURL().append('?')
-				.append(serverRequest.servletRequest().getQueryString()));
+		log.atFinest()
+				.log("Sync invoked: %s", serverRequest.servletRequest().getRequestURL().append('?')
+						.append(serverRequest.servletRequest().getQueryString()));
 
 		return ok()
 				.contentType(MediaType.APPLICATION_JSON)
@@ -70,8 +74,9 @@ public class JsonSyncServerHandler {
 	}
 
 	ServerResponse handleWipe(ServerRequest serverRequest) {
-		log.trace("-- calling wipe: {}", serverRequest.servletRequest().getRequestURL().append('?')
-				.append(serverRequest.servletRequest().getQueryString()));
+		log.atFinest()
+				.log("Wipe invoked: %s", serverRequest.servletRequest().getRequestURL().append('?')
+						.append(serverRequest.servletRequest().getQueryString()));
 
 		jsonSyncServerService.deleteAllItemsTagsAndDeletions();
 

@@ -1,17 +1,25 @@
 package com.jbequinn.jsonsyncserver.infrastructure.service;
 
+import lombok.extern.flogger.Flogger;
 import org.springframework.stereotype.Component;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
+import static com.google.common.flogger.LazyArgs.lazy;
 import static com.jbequinn.jsonsyncserver.infrastructure.service.JsonAccessor.getLongValueOrZero;
 
 @Component
+@Flogger
 public class JsonObjectMerger {
 
 	public JsonObject mergeItem(JsonObject one, JsonObject another) {
+		log.atFinest()
+				.log("Merging item: %s", lazy(() -> one));
+		log.atFinest()
+				.log("With the other item: %s", lazy(() -> another));
+
 		var base = getMostRecentOf(one, another);
 
 		var builder = Json.createObjectBuilder();
