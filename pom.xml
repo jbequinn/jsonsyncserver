@@ -17,7 +17,6 @@
 		<revision>4-SNAPSHOT</revision>
 
 		<java.version>11</java.version>
-		<dockerfile-maven-version>1.4.10</dockerfile-maven-version>
 	</properties>
 
 	<dependencies>
@@ -126,16 +125,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
 			</plugin>			
-      <plugin>
-        <groupId>com.spotify</groupId>
-        <artifactId>dockerfile-maven-plugin</artifactId>
-        <version>${dockerfile-maven-version}</version>
-        <configuration>
-          <!-- substitute in command line with -Ddocker.image.prefix= -->
-          <repository>${docker.image.prefix}/${project.artifactId}</repository>
-          <tag>${project.version}</tag>
-        </configuration>
-      </plugin>
 
 			<plugin>
 				<artifactId>maven-scm-plugin</artifactId>
