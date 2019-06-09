@@ -23,7 +23,7 @@ logging:
 
 spring:
   main:
-    lazy-initialization: true
+    lazy-initialization: false
   jackson:
     default-property-inclusion: non_null
     deserialization:
