@@ -24,7 +24,7 @@ public abstract class ITBase {
 
 		System.setProperty("application.mongo-host", mongoContainer.getContainerIpAddress());
 		System.setProperty("application.mongo-port", mongoContainer.getFirstMappedPort() + "");
-		System.setProperty("application.mongo-database", "mydb");
+		System.setProperty("application.mongo-database", "everdo");
 		System.setProperty("application.mongo-username", "root");
 		System.setProperty("application.mongo-password", "mypassword");
 	}
