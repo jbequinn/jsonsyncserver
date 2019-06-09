@@ -17,6 +17,7 @@
 		<revision>4-SNAPSHOT</revision>
 
 		<java.version>11</java.version>
+		<flogger.version>0.4</flogger.version>
 	</properties>
 
 	<dependencies>
@@ -58,7 +59,23 @@
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr353</artifactId>
 			<version>${jackson.version}</version>
-		</dependency>       
+		</dependency>
+		<dependency>
+			<groupId>com.google.flogger</groupId>
+			<artifactId>flogger</artifactId>
+			<version>${flogger.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.flogger</groupId>
+			<artifactId>flogger-slf4j-backend</artifactId>
+			<version>${flogger.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.flogger</groupId>
+			<artifactId>flogger-system-backend</artifactId>
+			<version>${flogger.version}</version>
+			<scope>runtime</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
