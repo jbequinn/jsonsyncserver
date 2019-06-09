@@ -36,7 +36,7 @@ services:
       - mongo.username=root
       - mongo.password=mypassword
       # uncomment to change the logging level
-      #- logging.level.com.dodecaedro=TRACE
+      #- logging.level.com.jbequinn.jsonsyncserver=TRACE
     networks:
       - internal
 

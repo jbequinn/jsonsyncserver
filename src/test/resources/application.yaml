@@ -19,7 +19,7 @@ server:
 
 logging:
   level:
-    com.dodecaedro: TRACE
+    com.jbequinn.jsonsyncserver: TRACE
 
 spring:
   main:
