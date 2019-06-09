@@ -38,7 +38,7 @@ public class MongoRepository {
 
 		itemsCollection = database.getCollection("items");
 		tagsCollection = database.getCollection("tags");
-		deletionsCollection = database.getCollection("deletion");
+		deletionsCollection = database.getCollection("deletions");
 
 		itemsCollection.createIndex(Indexes.ascending("id"));
 		tagsCollection.createIndex(Indexes.ascending("id"));
