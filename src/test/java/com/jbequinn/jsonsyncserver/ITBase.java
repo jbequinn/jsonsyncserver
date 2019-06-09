@@ -15,7 +15,7 @@ import static io.restassured.config.SSLConfig.sslConfig;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class ITBase {
 	static {
-		GenericContainer mongoContainer = new GenericContainer("mongo:4.1.13")
+		GenericContainer mongoContainer = new GenericContainer("mongo:4.0.10")
 				.withEnv("MONGO_INITDB_ROOT_USERNAME", "root")
 				.withEnv("MONGO_INITDB_ROOT_PASSWORD", "mypassword")
 				.withExposedPorts(27017);

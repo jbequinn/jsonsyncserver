@@ -7,7 +7,7 @@ Synchronization service for [Everdo](https://everdo.net/)
 version: "3.5"
 services:
   db:
-    image: mongo:4.1.13
+    image: mongo:4.0.10
     restart: unless-stopped
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
