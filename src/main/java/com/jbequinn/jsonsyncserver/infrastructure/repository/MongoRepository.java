@@ -34,7 +34,7 @@ public class MongoRepository {
 	public MongoRepository(MongoClient mongoClient, ObjectMapper objectMapper) {
 		this.objectMapper = requireNonNull(objectMapper);
 
-		var database = mongoClient.getDatabase("jsondb");
+		var database = mongoClient.getDatabase("everdo");
 
 		itemsCollection = database.getCollection("items");
 		tagsCollection = database.getCollection("tags");
