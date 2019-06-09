@@ -10,9 +10,6 @@ services:
   db:
     image: mongo:4.1.13
     restart: unless-stopped
-    ports:
-      - target: 27017
-        published: 27017
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=mypassword
