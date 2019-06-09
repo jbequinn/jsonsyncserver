@@ -14,7 +14,7 @@
 	<name>jsonsyncserver</name>
 
 	<properties>
-		<revision>4-SNAPSHOT</revision>
+		<revision>5-SNAPSHOT</revision>
 
 		<java.version>11</java.version>
 		<flogger.version>0.4</flogger.version>
