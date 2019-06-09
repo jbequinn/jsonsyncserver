@@ -35,7 +35,7 @@ services:
       - api.key=ABCDEF123
       - mongo.username=root
       - mongo.password=mypassword
-      # uncomment to change the logging lever
+      # uncomment to change the logging level
       #- logging.level.com.dodecaedro=TRACE
     networks:
       - internal
