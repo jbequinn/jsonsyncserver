@@ -141,7 +141,7 @@
 				<artifactId>maven-scm-plugin</artifactId>
 				<version>1.11.2</version>
 				<configuration>
-					<tag>${project.artifactId}-${project.version}</tag>
+					<tag>release-${project.version}</tag>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -179,16 +179,9 @@
 	</pluginRepositories>
 
 	<scm>
-		<connection>scm:git:git@github.com:jbequinn/jsonsyncserver.git</connection>
-		<url>scm:git:git@github.com:jbequinn/jsonsyncserver.git</url>
-		<developerConnection>scm:git:git@github.com:jbequinn/jsonsyncserver.git</developerConnection>
+		<url>https://github.com/jbequinn/jsonsyncserver</url>
+		<connection>scm:git:https://github.com/jbequinn/jsonsyncserver.git</connection>
+		<developerConnection>scm:git:https://github.com/jbequinn/jsonsyncserver.git</developerConnection>
 	</scm>
-
-	<distributionManagement>
-		<repository>
-			<id>artifact-repository</id>
-			<url>https://github.com/jbequinn/jsonsyncserver</url>
-		</repository>
-	</distributionManagement>
 
 </project>
