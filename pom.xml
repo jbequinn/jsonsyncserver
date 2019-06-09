@@ -10,10 +10,12 @@
 	</parent>
 	<groupId>com.jbequinn</groupId>
 	<artifactId>jsonsyncserver</artifactId>
-	<version>1-SNAPSHOT</version>
+	<version>${revision}</version>
 	<name>jsonsyncserver</name>
 
 	<properties>
+		<revision>1-SNAPSHOT</revision>
+
 		<java.version>11</java.version>
 		<dockerfile-maven-version>1.4.10</dockerfile-maven-version>
 	</properties>
@@ -133,7 +135,15 @@
           <repository>${docker.image.prefix}/${project.artifactId}</repository>
           <tag>${project.version}</tag>
         </configuration>
-      </plugin>			
+      </plugin>
+
+			<plugin>
+				<artifactId>maven-scm-plugin</artifactId>
+				<version>1.11.2</version>
+				<configuration>
+					<tag>${project.artifactId}-${project.version}</tag>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -167,5 +177,18 @@
 			<url>https://repo.spring.io/milestone</url>
 		</pluginRepository>
 	</pluginRepositories>
+
+	<scm>
+		<connection>scm:git:git@github.com:jbequinn/jsonsyncserver.git</connection>
+		<url>scm:git:git@github.com:jbequinn/jsonsyncserver.git</url>
+		<developerConnection>scm:git:git@github.com:jbequinn/jsonsyncserver.git</developerConnection>
+	</scm>
+
+	<distributionManagement>
+		<repository>
+			<id>artifact-repository</id>
+			<url>https://github.com/jbequinn/jsonsyncserver</url>
+		</repository>
+	</distributionManagement>
 
 </project>
