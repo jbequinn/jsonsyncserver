@@ -5,7 +5,6 @@ Synchronization service for [Everdo](https://everdo.net/)
 * This service is intended to be run with Docker. An example of a docker-compose file would be:
 ```
 version: "3.5"
-
 services:
   db:
     image: mongo:4.1.13
@@ -22,7 +21,6 @@ services:
         target: /data/configdb
     networks:
       - internal
-
   app:
     image: jbequinn/jsonsyncserver:4
     restart: unless-stopped
@@ -32,19 +30,16 @@ services:
       - target: 443
         published: 8443
     environment:
-      - api.key=ABCDEF123
+      - api.key=my-everdo-key
       - mongo.username=root
       - mongo.password=mypassword
       # uncomment to change the logging level
       #- logging.level.com.jbequinn.jsonsyncserver=TRACE
     networks:
       - internal
-
 networks:
   internal:
-
 volumes:
   db-data:
   db-config:
-
 ```
