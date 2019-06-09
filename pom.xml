@@ -14,7 +14,7 @@
 	<name>jsonsyncserver</name>
 
 	<properties>
-		<revision>3-SNAPSHOT</revision>
+		<revision>4-SNAPSHOT</revision>
 
 		<java.version>11</java.version>
 		<dockerfile-maven-version>1.4.10</dockerfile-maven-version>
