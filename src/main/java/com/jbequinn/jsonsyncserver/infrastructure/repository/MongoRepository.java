@@ -108,29 +108,43 @@ public class MongoRepository {
 	}
 
 	public void saveNewItems(List<JsonObject> items) {
-		if (items != null && !items.isEmpty()) {
-			itemsCollection.insertMany(toDocuments(items));
-		}
+		saveInCollection(itemsCollection, items);
 	}
 
 	public void saveNewTags(List<JsonObject> tags) {
-		if (tags != null && !tags.isEmpty()) {
-			tagsCollection.insertMany(toDocuments(tags));
-		}
+		saveInCollection(tagsCollection, tags);
 	}
 
 	public void saveNewDeletions(List<JsonObject> deletions) {
-		if (deletions != null && !deletions.isEmpty()) {
-			deletionsCollection.insertMany(toDocuments(deletions));
+		saveInCollection(deletionsCollection, deletions);
+	}
+
+	private void saveInCollection(MongoCollection<Document> collection, List<JsonObject> objects) {
+		if (objects == null || objects.isEmpty()) {
+			log.atFine().log("No elements to save");
+			return;
 		}
+		collection.insertMany(toDocuments(objects));
 	}
 
 	public void updateExistingItems(List<JsonObject> items) {
-		updateInCollection(items, itemsCollection);
+		updateInCollection(itemsCollection, items);
 	}
 
 	public void updateExistingTags(List<JsonObject> tags) {
-		updateInCollection(tags, tagsCollection);
+		updateInCollection(tagsCollection, tags);
+	}
+
+	private void updateInCollection(MongoCollection<Document> collection, List<JsonObject> jsonObjects) {
+		if (jsonObjects == null || jsonObjects.isEmpty()) {
+			log.atFine().log("No elements to update");
+			return;
+		}
+
+		jsonObjects.stream()
+				.map(JsonValue::asJsonObject)
+				.forEach(item -> collection
+						.replaceOne(eq("id", item.getString("id")), parse(item.toString())));
 	}
 
 	public void sync(ChangesDto changes) {
@@ -142,22 +156,17 @@ public class MongoRepository {
 
 		saveNewDeletions(changes.getNewDeletions());
 
-		if (changes.getItemsIdsToDelete() != null && !changes.getItemsIdsToDelete().isEmpty()) {
-			itemsCollection.deleteMany(in("id", changes.getItemsIdsToDelete()));
-		}
-
-		if (changes.getTagIdsToDelete() != null && !changes.getTagIdsToDelete().isEmpty()) {
-			tagsCollection.deleteMany(in("id", changes.getTagIdsToDelete()));
-		}
+		deleteInCollection(itemsCollection, changes.getItemsIdsToDelete());
+		deleteInCollection(tagsCollection, changes.getTagIdsToDelete());
 	}
 
-	private void updateInCollection(List<JsonObject> jsonObjects, MongoCollection<Document> collection) {
-		if (jsonObjects != null && !jsonObjects.isEmpty()) {
-			jsonObjects.stream()
-					.map(JsonValue::asJsonObject)
-					.forEach(item -> itemsCollection
-							.replaceOne(eq("id", item.getString("id")), parse(item.toString())));
+	private void deleteInCollection(MongoCollection<Document> collection, List<String> ids) {
+		if (ids == null || ids.isEmpty()) {
+			log.atFine().log("No ids to delete");
+			return;
 		}
+
+		collection.deleteMany(in("id", ids));
 	}
 
 	public void deleteAllItems() {
