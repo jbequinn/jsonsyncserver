@@ -77,22 +77,16 @@ public class MongoRepository {
 	}
 
 	public JsonArray findItemsNewerThan(long timestamp) {
-		var builder = Json.createArrayBuilder();
-		itemsCollection.find()
-				.filter(or(
-						gt("changed_ts", timestamp),
-						gt("title_ts", timestamp),
-						gt("created_on", timestamp)
-				))
-				.map(this::fromDocument)
-				.forEach((Consumer<JsonObject>) builder::add);
-
-		return builder.build();
+		return findInCollectionNewerThan(itemsCollection, timestamp);
 	}
 
 	public JsonArray findTagsNewerThan(long timestamp) {
+		return findInCollectionNewerThan(tagsCollection, timestamp);
+	}
+
+	private JsonArray findInCollectionNewerThan(MongoCollection<Document> collection, long timestamp) {
 		var builder = Json.createArrayBuilder();
-		tagsCollection.find()
+		collection.find()
 				.filter(or(
 						gt("changed_ts", timestamp),
 						gt("created_on", timestamp)
@@ -106,8 +100,7 @@ public class MongoRepository {
 	public JsonArray findDeletionsNewerThan(long timestamp) {
 		var builder = Json.createArrayBuilder();
 		deletionsCollection.find()
-				//.filter(and(gt("ts", timestamp), not(in("sync_id", ids))))
-				.filter(and(gt("ts", timestamp)))
+				.filter(gt("ts", timestamp))
 				.map(this::fromDocument)
 				.forEach((Consumer<JsonObject>) builder::add);
 
