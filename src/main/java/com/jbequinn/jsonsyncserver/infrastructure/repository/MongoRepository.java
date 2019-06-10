@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Indexes;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.flogger.Flogger;
 import org.bson.Document;
 import org.springframework.stereotype.Repository;
 
@@ -22,8 +22,8 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static org.bson.Document.parse;
 
-@Slf4j
 @Repository
+@Flogger
 public class MongoRepository {
 	private final MongoCollection<Document> itemsCollection;
 	private final MongoCollection<Document> tagsCollection;
@@ -202,6 +202,9 @@ public class MongoRepository {
 		try {
 			return objectMapper.readValue(document.toJson(), JsonObject.class);
 		} catch (IOException e) {
+			log.atSevere()
+					.withCause(e)
+					.log("Error when reading the Mongo document: %s", document);
 			return JsonValue.EMPTY_JSON_OBJECT;
 		}
 	}
