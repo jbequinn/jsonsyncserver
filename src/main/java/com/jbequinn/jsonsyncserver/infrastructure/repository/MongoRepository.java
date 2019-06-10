@@ -57,22 +57,18 @@ public class MongoRepository {
 	}
 
 	public List<JsonObject> findItemsById(List<String> ids) {
-		if (ids == null || ids.isEmpty()) {
-			return List.of();
-		}
-
 		return findInCollectionById(itemsCollection, ids);
 	}
 
 	public List<JsonObject> findTagsById(List<String> ids) {
-		if (ids == null || ids.isEmpty()) {
-			return List.of();
-		}
-
 		return findInCollectionById(tagsCollection, ids);
 	}
 
 	private List<JsonObject> findInCollectionById(MongoCollection<Document> collection, List<String> ids) {
+		if (ids == null || ids.isEmpty()) {
+			return List.of();
+		}
+
 		return collection.find()
 				.filter(in("id", ids))
 				.map(this::fromDocument)
