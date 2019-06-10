@@ -67,6 +67,7 @@ public class MongoRepository {
 
 	private List<JsonObject> findInCollectionById(MongoCollection<Document> collection, List<String> ids) {
 		if (ids == null || ids.isEmpty()) {
+			log.atFine().log("No ids to find in the collection %s", collection.getNamespace().getCollectionName());
 			return List.of();
 		}
 
@@ -121,7 +122,7 @@ public class MongoRepository {
 
 	private void saveInCollection(MongoCollection<Document> collection, List<JsonObject> objects) {
 		if (objects == null || objects.isEmpty()) {
-			log.atFine().log("No elements to save");
+			log.atFine().log("No elements to save in the collection %s", collection.getNamespace().getCollectionName());
 			return;
 		}
 		collection.insertMany(toDocuments(objects));
@@ -137,7 +138,7 @@ public class MongoRepository {
 
 	private void updateInCollection(MongoCollection<Document> collection, List<JsonObject> jsonObjects) {
 		if (jsonObjects == null || jsonObjects.isEmpty()) {
-			log.atFine().log("No elements to update");
+			log.atFine().log("No elements to update in the collection %s", collection.getNamespace().getCollectionName());
 			return;
 		}
 
@@ -162,7 +163,7 @@ public class MongoRepository {
 
 	private void deleteInCollection(MongoCollection<Document> collection, List<String> ids) {
 		if (ids == null || ids.isEmpty()) {
-			log.atFine().log("No ids to delete");
+			log.atFine().log("No ids to delete in the collection %s", collection.getNamespace().getCollectionName());
 			return;
 		}
 
