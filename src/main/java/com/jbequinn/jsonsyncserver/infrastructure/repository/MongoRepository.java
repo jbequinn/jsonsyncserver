@@ -6,6 +6,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Indexes;
 import lombok.extern.flogger.Flogger;
 import org.bson.Document;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import javax.json.Json;
@@ -193,6 +194,7 @@ public class MongoRepository {
 				.collect(toList());
 	}
 
+	@NonNull
 	private JsonObject fromDocument(Document document) {
 		document.remove("_id");
 		try {
