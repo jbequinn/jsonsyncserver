@@ -1,6 +1,7 @@
 package com.jbequinn.jsonsyncserver.infrastructure.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jbequinn.jsonsyncserver.domain.model.ChangesDto;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Indexes;

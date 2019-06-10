@@ -1,6 +1,6 @@
 package com.jbequinn.jsonsyncserver.infrastructure.service;
 
-import com.jbequinn.jsonsyncserver.infrastructure.repository.ChangesDto;
+import com.jbequinn.jsonsyncserver.domain.model.ChangesDto;
 import com.jbequinn.jsonsyncserver.infrastructure.repository.MongoRepository;
 import lombok.extern.flogger.Flogger;
 import org.springframework.stereotype.Service;
