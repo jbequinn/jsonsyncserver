@@ -2,7 +2,9 @@ package com.jbequinn.jsonsyncserver;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer.Random;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -16,6 +18,7 @@ import static java.net.HttpURLConnection.HTTP_OK;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@TestMethodOrder(Random.class)
 public class SyncIT extends ITBase {
 	@BeforeEach
 	void setUp() throws Exception {
