@@ -96,12 +96,12 @@ public class JsonSyncServerService {
 		tags.stream()
 				.map(JsonValue::asJsonObject)
 				.forEach(tag -> {
-							existingTagsById.computeIfPresent(tag.getString("id"),
-									(key, jsonObject) -> merger.mergeTag(tag, jsonObject));
-							existingTagsById.computeIfAbsent(tag.getString("id"), key -> {
+							var tagId = tag.getString("id");
+							if (existingTagsById.containsKey(tagId)) {
+								existingTagsById.put(tagId, merger.mergeTag(tag, existingTagsById.get(tagId)));
+							} else {
 								changes.getNewTagsToSave().add(tag);
-								return null;
-							});
+							}
 						}
 				);
 
@@ -121,12 +121,12 @@ public class JsonSyncServerService {
 		items.stream()
 				.map(JsonValue::asJsonObject)
 				.forEach(item -> {
-							existingItemsById.computeIfPresent(item.getString("id"),
-									(key, jsonObject) -> merger.mergeItem(item, jsonObject));
-							existingItemsById.computeIfAbsent(item.getString("id"), key -> {
+							var itemId = item.getString("id");
+							if (existingItemsById.containsKey(itemId)) {
+								existingItemsById.put(itemId, merger.mergeItem(item, existingItemsById.get(itemId)));
+							} else {
 								changes.getNewItemsToSave().add(item);
-								return null;
-							});
+							}
 						}
 				);
 
