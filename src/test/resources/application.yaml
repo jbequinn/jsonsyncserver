@@ -1,9 +1,5 @@
 application:
   key: ABCDEF
-  mongo-host: localhost
-  mongo-port: 27017
-  mongo-username: root
-  mongo-password: mypassword
 
 server:
   ssl:
@@ -20,6 +16,7 @@ server:
 logging:
   level:
     com.jbequinn.jsonsyncserver: TRACE
+    com.github.dockerjava: INFO
 
 spring:
   main:

@@ -2,6 +2,7 @@ package com.jbequinn.jsonsyncserver.infrastructure.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jbequinn.jsonsyncserver.domain.model.ChangesDto;
+import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Indexes;
@@ -31,10 +32,14 @@ public class MongoRepository {
 	private final MongoCollection<Document> tagsCollection;
 	private final MongoCollection<Document> deletionsCollection;
 
+	private final MongoClient mongoClient;
 	private final ObjectMapper objectMapper;
 
 	public MongoRepository(MongoClient mongoClient, ObjectMapper objectMapper) {
 		this.objectMapper = requireNonNull(objectMapper);
+		this.mongoClient = mongoClient;
+
+		mongoClient.getDatabase("admin").runCommand("setFeatureCompatibilityVersion: 4.0");
 
 		var database = mongoClient.getDatabase("everdo");
 
@@ -113,12 +118,24 @@ public class MongoRepository {
 		saveInCollection(itemsCollection, items);
 	}
 
+	public void saveNewItems(List<JsonObject> items, ClientSession session) {
+		saveInCollection(itemsCollection, items, session);
+	}
+
 	public void saveNewTags(List<JsonObject> tags) {
 		saveInCollection(tagsCollection, tags);
 	}
 
+	public void saveNewTags(List<JsonObject> tags, ClientSession session) {
+		saveInCollection(tagsCollection, tags, session);
+	}
+
 	public void saveNewDeletions(List<JsonObject> deletions) {
 		saveInCollection(deletionsCollection, deletions);
+	}
+
+	public void saveNewDeletions(List<JsonObject> deletions, ClientSession session) {
+		saveInCollection(deletionsCollection, deletions, session);
 	}
 
 	private void saveInCollection(MongoCollection<Document> collection, List<JsonObject> objects) {
@@ -129,12 +146,28 @@ public class MongoRepository {
 		collection.insertMany(toDocuments(objects));
 	}
 
+	private void saveInCollection(MongoCollection<Document> collection, List<JsonObject> objects, ClientSession session) {
+		if (objects == null || objects.isEmpty()) {
+			log.atFine().log("No elements to save in the collection %s", collection.getNamespace().getCollectionName());
+			return;
+		}
+		collection.insertMany(session, toDocuments(objects));
+	}
+
 	public void updateExistingItems(List<JsonObject> items) {
 		updateInCollection(itemsCollection, items);
 	}
 
+	public void updateExistingItems(List<JsonObject> items, ClientSession session) {
+		updateInCollection(itemsCollection, items, session);
+	}
+
 	public void updateExistingTags(List<JsonObject> tags) {
 		updateInCollection(tagsCollection, tags);
+	}
+
+	public void updateExistingTags(List<JsonObject> tags, ClientSession session) {
+		updateInCollection(tagsCollection, tags, session);
 	}
 
 	private void updateInCollection(MongoCollection<Document> collection, List<JsonObject> jsonObjects) {
@@ -149,17 +182,32 @@ public class MongoRepository {
 						.replaceOne(eq("id", item.getString("id")), parse(item.toString())));
 	}
 
+	private void updateInCollection(MongoCollection<Document> collection, List<JsonObject> jsonObjects, ClientSession session) {
+		if (jsonObjects == null || jsonObjects.isEmpty()) {
+			log.atFine().log("No elements to update in the collection %s", collection.getNamespace().getCollectionName());
+			return;
+		}
+
+		jsonObjects.stream()
+				.map(JsonValue::asJsonObject)
+				.forEach(item -> collection
+						.replaceOne(session, eq("id", item.getString("id")), parse(item.toString())));
+	}
+
 	public void sync(ChangesDto changes) {
-		saveNewItems(changes.getNewItemsToSave());
-		updateExistingItems(changes.getItemsToUpdate());
+		try (ClientSession session = mongoClient.startSession()) {
+			saveNewItems(changes.getNewItemsToSave(), session);
+			updateExistingItems(changes.getItemsToUpdate(), session);
 
-		saveNewTags(changes.getNewTagsToSave());
-		updateExistingTags(changes.getTagsToUpdate());
+			saveNewTags(changes.getNewTagsToSave(), session);
+			updateExistingTags(changes.getTagsToUpdate(), session);
 
-		saveNewDeletions(changes.getNewDeletions());
+			saveNewDeletions(changes.getNewDeletions(), session);
 
-		deleteInCollection(itemsCollection, changes.getItemsIdsToDelete());
-		deleteInCollection(tagsCollection, changes.getTagIdsToDelete());
+			deleteInCollection(itemsCollection, changes.getItemsIdsToDelete(), session);
+			deleteInCollection(tagsCollection, changes.getTagIdsToDelete(), session);
+
+		}
 	}
 
 	private void deleteInCollection(MongoCollection<Document> collection, List<String> ids) {
@@ -169,6 +217,15 @@ public class MongoRepository {
 		}
 
 		collection.deleteMany(in("id", ids));
+	}
+
+	private void deleteInCollection(MongoCollection<Document> collection, List<String> ids, ClientSession session) {
+		if (ids == null || ids.isEmpty()) {
+			log.atFine().log("No ids to delete in the collection %s", collection.getNamespace().getCollectionName());
+			return;
+		}
+
+		collection.deleteMany(session, in("id", ids));
 	}
 
 	public void deleteAllItems() {

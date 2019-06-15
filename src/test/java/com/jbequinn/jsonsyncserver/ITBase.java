@@ -15,9 +15,13 @@ import static io.restassured.config.SSLConfig.sslConfig;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class ITBase {
 	static {
-		GenericContainer mongoContainer = new GenericContainer("mongo:4.0.10")
-				.withEnv("MONGO_INITDB_ROOT_USERNAME", "root")
-				.withEnv("MONGO_INITDB_ROOT_PASSWORD", "mypassword")
+		GenericContainer mongoContainer = new GenericContainer("bitnami/mongodb:4.1.10")
+				.withEnv("MONGODB_USERNAME", "myuser")
+				.withEnv("MONGODB_PASSWORD", "password123")
+				.withEnv("MONGODB_DATABASE", "everdo")
+				.withEnv("MONGODB_ROOT_PASSWORD", "mypassword")
+				.withEnv("MONGODB_REPLICA_SET_MODE", "primary")
+				.withEnv("MONGODB_REPLICA_SET_KEY", "replicaKey123")
 				.withExposedPorts(27017);
 
 		mongoContainer.start();
@@ -25,8 +29,8 @@ public abstract class ITBase {
 		System.setProperty("application.mongo-host", mongoContainer.getContainerIpAddress());
 		System.setProperty("application.mongo-port", mongoContainer.getFirstMappedPort() + "");
 		System.setProperty("application.mongo-database", "everdo");
-		System.setProperty("application.mongo-username", "root");
-		System.setProperty("application.mongo-password", "mypassword");
+		System.setProperty("application.mongo-username", "myuser");
+		System.setProperty("application.mongo-password", "password123");
 	}
 
 	@Autowired
