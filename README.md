@@ -22,7 +22,7 @@ services:
     networks:
       - internal
   app:
-    image: jbequinn/jsonsyncserver:9
+    image: jbequinn/jsonsyncserver:10
     restart: unless-stopped
     depends_on:
       - db
