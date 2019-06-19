@@ -43,7 +43,7 @@
 		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongodb-driver-sync</artifactId>
-			<version>3.11.0-beta3</version>
+			<version>3.11.0-beta4</version>
 		</dependency>
 
 		<dependency>
