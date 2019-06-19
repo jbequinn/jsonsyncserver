@@ -1,4 +1,4 @@
-# Json Sync Server
+# Json Sync Server [![Build Status](https://travis-ci.org/jbequinn/jsonsyncserver.svg?branch=master)](https://travis-ci.org/jbequinn/jsonsyncserver)
 Synchronization service for [Everdo](https://everdo.net/)
 
 ## How to run
