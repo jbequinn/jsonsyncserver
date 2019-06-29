@@ -1,5 +1,5 @@
 # Json Sync Server [![Build Status](https://travis-ci.org/jbequinn/jsonsyncserver.svg?branch=master)](https://travis-ci.org/jbequinn/jsonsyncserver) [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=jbequinn/jsonsyncserver)](https://dependabot.com)
-Synchronization service for [Everdo](https://everdo.net/)
+Synchronization service for [Everdo](https://everdo.net/). This can be considered a _proof of concept_. I'm not responsible for any data loss.
 
 ## How to run
 * This service is intended to be run with Docker. An example of a docker-compose file would be:
