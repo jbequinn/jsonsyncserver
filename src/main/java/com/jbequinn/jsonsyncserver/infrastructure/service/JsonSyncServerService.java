@@ -6,6 +6,7 @@ import lombok.extern.flogger.Flogger;
 import org.springframework.stereotype.Service;
 
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 import java.time.Instant;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.concurrent.TimeoutException;
 
 import static com.google.common.flogger.LazyArgs.lazy;
 import static com.jbequinn.jsonsyncserver.infrastructure.service.JsonAccessor.getLongValueOrZero;
+import static java.util.concurrent.CompletableFuture.allOf;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -70,24 +72,33 @@ public class JsonSyncServerService {
 		CompletableFuture<Void> processTags = CompletableFuture
 				.supplyAsync(() -> getExistingTags(tags))
 				.thenAccept(existingTagsById -> addTagsToDto(tags, existingTagsById, changes));
-
 		CompletableFuture<Void> processItems = CompletableFuture
 				.supplyAsync(() -> getExistingItems(items))
 				.thenAccept(existingItemsById -> addItemsToDto(items, existingItemsById, changes));
 
-		CompletableFuture.allOf(processTags, processItems).get(2, TimeUnit.MINUTES);
+		allOf(processTags, processItems).get(2, TimeUnit.MINUTES);
 
 		repository.sync(changes);
 
 		// optimization: don't include in the response those elements sent
-		var response = createObjectBuilder()
+		var responseBuilder = createObjectBuilder()
 				.add("sync_ts", updatedTimestamp)
-				.add("items", repository.findItemsNewerThan(lastSync))
-				.add("tags", repository.findTagsNewerThan(lastSync))
-				.add("deletions_to_add", repository.findDeletionsNewerThan(lastSync))
 				.add("success", true)
-				.add("time_delta_ms", getLongValueOrZero(jsonObject, "time_delta_ms"))
-				.build();
+				.add("time_delta_ms", getLongValueOrZero(jsonObject, "time_delta_ms"));
+
+		CompletableFuture<Void> findItemsNewer = CompletableFuture
+				.supplyAsync(() -> repository.findItemsNewerThan(lastSync))
+				.thenAccept(itemsNewer -> responseBuilder.add("items", itemsNewer));
+		CompletableFuture<Void> findTagsNewer = CompletableFuture
+				.supplyAsync(() -> repository.findTagsNewerThan(lastSync))
+				.thenAccept(tagsNewer -> responseBuilder.add("tags", tagsNewer));
+		CompletableFuture<Void> findDeletionsNewer = CompletableFuture
+				.supplyAsync(() -> repository.findDeletionsNewerThan(lastSync))
+				.thenAccept(deletionsNewer -> responseBuilder.add("deletions_to_add", deletionsNewer));
+
+		allOf(findItemsNewer, findTagsNewer, findDeletionsNewer).get(2, TimeUnit.MINUTES);
+
+		var response = responseBuilder.build();
 
 		log.atFinest()
 				.log("Response body: %s", lazy(() -> response));
