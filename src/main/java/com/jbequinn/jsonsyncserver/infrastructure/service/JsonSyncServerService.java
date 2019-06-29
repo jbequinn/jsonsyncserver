@@ -9,7 +9,12 @@ import javax.json.JsonObject;
 import javax.json.JsonValue;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static com.google.common.flogger.LazyArgs.lazy;
 import static com.jbequinn.jsonsyncserver.infrastructure.service.JsonAccessor.getLongValueOrZero;
@@ -29,7 +34,7 @@ public class JsonSyncServerService {
 		this.merger = merger;
 	}
 
-	public JsonObject sync(JsonObject jsonObject) {
+	public JsonObject sync(JsonObject jsonObject) throws ExecutionException, InterruptedException, TimeoutException {
 		log.atFinest()
 				.log("Request body: %s", lazy(() -> jsonObject));
 
@@ -62,8 +67,15 @@ public class JsonSyncServerService {
 				.map(element -> element.getString("sync_id"))
 				.collect(toList()));
 
-		addItemsToDto(items, changes);
-		addTagsToDto(tags, changes);
+		CompletableFuture<Void> processTags = CompletableFuture
+				.supplyAsync(() -> getExistingTags(tags))
+				.thenAccept(existingTagsById -> addTagsToDto(tags, existingTagsById, changes));
+
+		CompletableFuture<Void> processItems = CompletableFuture
+				.supplyAsync(() -> getExistingItems(items))
+				.thenAccept(existingItemsById -> addItemsToDto(items, existingItemsById, changes));
+
+		CompletableFuture.allOf(processTags, processItems).get(2, TimeUnit.MINUTES);
 
 		repository.sync(changes);
 
@@ -83,16 +95,18 @@ public class JsonSyncServerService {
 		return response;
 	}
 
-	private void addTagsToDto(List<JsonObject> tags, ChangesDto changes) {
+	private Map<String, JsonObject> getExistingTags(List<JsonObject> tags) {
 		var tagIds = tags.stream()
 				.map(JsonValue::asJsonObject)
 				.map(jsonObject -> jsonObject.getString("id"))
 				.collect(toList());
 
-		var existingTagsById = repository.findTagsById(tagIds).stream()
+		return repository.findTagsById(tagIds).stream()
 				.map(JsonValue::asJsonObject)
 				.collect(toMap(object -> object.getString("id"), identity()));
+	}
 
+	private void addTagsToDto(List<JsonObject> tags, Map<String, JsonObject> existingTagsById, ChangesDto changes) {
 		tags.stream()
 				.map(JsonValue::asJsonObject)
 				.forEach(tag -> {
@@ -108,16 +122,18 @@ public class JsonSyncServerService {
 		changes.getTagsToUpdate().addAll(existingTagsById.values());
 	}
 
-	private void addItemsToDto(List<JsonObject> items, ChangesDto changes) {
+	private Map<String, JsonObject> getExistingItems(List<JsonObject> items) {
 		var itemIds = items.stream()
 				.map(JsonValue::asJsonObject)
 				.map(jsonObject -> jsonObject.getString("id"))
 				.collect(toList());
 
-		var existingItemsById = repository.findItemsById(itemIds).stream()
+		return repository.findItemsById(itemIds).stream()
 				.map(JsonValue::asJsonObject)
 				.collect(toMap(object -> object.getString("id"), identity()));
+	}
 
+	private void addItemsToDto(List<JsonObject> items, Map<String, JsonObject> existingItemsById, ChangesDto changes) {
 		items.stream()
 				.map(JsonValue::asJsonObject)
 				.forEach(item -> {
