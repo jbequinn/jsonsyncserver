@@ -1,6 +1,13 @@
 package com.jbequinn.jsonsyncserver;
 
+import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.filter.log.ResponseLoggingFilter;
+import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.Random;
 import org.junit.jupiter.api.Test;
@@ -15,6 +22,7 @@ import java.time.Instant;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static java.net.HttpURLConnection.HTTP_OK;
+import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,24 +30,48 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SyncIT extends ITBase {
 	@BeforeEach
 	void setUp() throws Exception {
-		when()
+		given()
+				.spec(spec)
+		.when()
 				.post("/wipe")
-			.then().assertThat()
+		.then().assertThat()
 				.statusCode(HTTP_OK);
 
 		given()
+				.spec(spec)
 				.body(ClassLoader.getSystemResourceAsStream("file-simple.json").readAllBytes())
-				.when()
+		.when()
 				.post("/push")
-				.then().assertThat()
+		.then().assertThat()
 				.statusCode(HTTP_OK);
+	}
+
+	@Test
+	void unauthorizedRequest() {
+		RequestSpecification spec = new RequestSpecBuilder()
+				.setBaseUri("https://localhost")
+				.setPort(port)
+				.setBasePath("/")
+				.addQueryParam("key", "totally-wrong-token")
+				.addFilter(new ResponseLoggingFilter())
+				.addFilter(new RequestLoggingFilter())
+				.build();
+
+		given()
+				.spec(spec)
+		.when()
+				.post("/pull")
+		.then().assertThat()
+				.statusCode(HTTP_UNAUTHORIZED);
 	}
 
 	@Test
 	void timeEndpoint() {
 		var before = Instant.now().toEpochMilli();
 
-		long time = when()
+		long time = given()
+					.spec(spec)
+				.when()
 					.get("/time")
 				.then().assertThat()
 					.statusCode(HTTP_OK)
@@ -50,7 +82,9 @@ public class SyncIT extends ITBase {
 
 	@Test
 	void pullEndpoint() {
-		String responseString = when()
+		String responseString = given()
+					.spec(spec)
+				.when()
 					.post("/pull")
 				.then().assertThat()
 					.statusCode(HTTP_OK)
@@ -102,6 +136,7 @@ public class SyncIT extends ITBase {
 
 		// GIVEN a sync request object with no new data, and no previous synchronization timestamp
 		var responseString = given()
+					.spec(spec)
 					.body(Json.createObjectBuilder()
 							.add("last_sync_ts", "null")
 							.add("changes", Json.createObjectBuilder()
@@ -169,6 +204,7 @@ public class SyncIT extends ITBase {
 	@Test
 	void syncFutureTimestampReturnsEmpty() {
 		String responseString = given()
+				.spec(spec)
 				.body(Json.createObjectBuilder()
 						.add("last_sync_ts", 2000000000L)
 						.add("changes", Json.createObjectBuilder()
@@ -178,10 +214,10 @@ public class SyncIT extends ITBase {
 								.build())
 						.build().toString())
 				.when()
-				.post("/sync")
+					.post("/sync")
 				.then().assertThat()
-				.statusCode(HTTP_OK)
-				.extract().body().asString();
+					.statusCode(HTTP_OK)
+					.extract().body().asString();
 
 		JsonObject response;
 		try (var jsonReader = Json.createReader(new StringReader(responseString))) {
@@ -215,6 +251,7 @@ public class SyncIT extends ITBase {
 	void syncOnelementAddedReturnsNewer() throws Exception {
 		// GIVEN a sync request object
 		var responseString = given()
+				.spec(spec)
 				.body(Json.createObjectBuilder()
 						.add("last_sync_ts", 1525128954)
 						.add("changes", Json.createObjectBuilder()
@@ -231,10 +268,10 @@ public class SyncIT extends ITBase {
 						.build().toString())
 				// WHEN performing the request
 				.when()
-				.post("/sync")
+					.post("/sync")
 				.then().assertThat()
-				.statusCode(HTTP_OK)
-				.extract().body().asString();
+					.statusCode(HTTP_OK)
+					.extract().body().asString();
 
 		JsonObject response;
 		try (var jsonReader = Json.createReader(new StringReader(responseString))) {
@@ -277,11 +314,13 @@ public class SyncIT extends ITBase {
 					);
 		});
 
-		String responseString2 = when()
-				.post("/pull")
+		String responseString2 = given()
+					.spec(spec)
+				.when()
+					.post("/pull")
 				.then().assertThat()
-				.statusCode(HTTP_OK)
-				.extract().body().asString();
+					.statusCode(HTTP_OK)
+					.extract().body().asString();
 
 		JsonObject response2;
 		try (var jsonReader = Json.createReader(new StringReader(responseString2))) {
@@ -304,6 +343,7 @@ public class SyncIT extends ITBase {
 	void deleteItemAndTag() {
 		// GIVEN a sync request object
 		var responseString = given()
+				.spec(spec)
 				.body(Json.createObjectBuilder()
 						.add("last_sync_ts", 2000000000)
 						.add("changes", Json.createObjectBuilder()
@@ -357,11 +397,13 @@ public class SyncIT extends ITBase {
 			softly.assertThat(deletionIds).isEmpty();
 		});
 
-		String responseString2 = when()
-				.post("/pull")
+		String responseString2 = given()
+					.spec(spec)
+				.when()
+					.post("/pull")
 				.then().assertThat()
-				.statusCode(HTTP_OK)
-				.extract().body().asString();
+					.statusCode(HTTP_OK)
+					.extract().body().asString();
 
 		JsonObject response2;
 		try (var jsonReader = Json.createReader(new StringReader(responseString2))) {

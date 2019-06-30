@@ -3,6 +3,10 @@ package com.jbequinn.jsonsyncserver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.filter.log.ResponseLoggingFilter;
+import io.restassured.specification.RequestSpecification;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,16 +36,20 @@ public abstract class ITBase {
 	@Autowired
 	private ObjectMapper objectMapper;
 	@LocalServerPort
-	private int port;
+	protected int port;
+
+	protected RequestSpecification spec = new RequestSpecBuilder()
+			.setBaseUri("https://localhost")
+			.setBasePath("/")
+			.addQueryParam("key", "ABCDEF")
+			.addFilter(new ResponseLoggingFilter())
+			.addFilter(new RequestLoggingFilter())
+			.build();
 
 	@BeforeEach
 	public void setUpRestAssured() {
-		RestAssured.baseURI = "https://localhost";
-		RestAssured.basePath = "/";
-		RestAssured.port = port;
-		RestAssured.requestSpecification = new RequestSpecBuilder()
-				.addQueryParam("key", "ABCDEF")
-				.build();
+		spec.port(port);
+
 		RestAssured.config = config()
 				.objectMapperConfig(config().getObjectMapperConfig()
 						.jackson2ObjectMapperFactory((cls, charset) -> objectMapper))
