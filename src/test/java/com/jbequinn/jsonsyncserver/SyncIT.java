@@ -1,17 +1,12 @@
 package com.jbequinn.jsonsyncserver;
 
-import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
-import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer.Random;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -20,13 +15,11 @@ import java.io.StringReader;
 import java.time.Instant;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@TestMethodOrder(Random.class)
 public class SyncIT extends ITBase {
 	@BeforeEach
 	void setUp() throws Exception {

@@ -8,15 +8,22 @@ import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.testcontainers.containers.GenericContainer;
 
+import javax.annotation.PostConstruct;
+
+import static io.restassured.config.LogConfig.logConfig;
+import static io.restassured.config.ObjectMapperConfig.objectMapperConfig;
 import static io.restassured.config.RestAssuredConfig.config;
 import static io.restassured.config.SSLConfig.sslConfig;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.Random.class)
 public abstract class ITBase {
 	static {
 		GenericContainer mongoContainer = new GenericContainer("mongo:4.0.10")
@@ -40,18 +47,17 @@ public abstract class ITBase {
 
 	protected RequestSpecification spec = new RequestSpecBuilder()
 			.setBaseUri("https://localhost")
-			.setBasePath("/")
 			.addQueryParam("key", "ABCDEF")
-			.addFilter(new ResponseLoggingFilter())
-			.addFilter(new RequestLoggingFilter())
 			.build();
 
-	@BeforeEach
+	@PostConstruct
 	public void setUpRestAssured() {
 		spec.port(port);
 
 		RestAssured.config = config()
-				.objectMapperConfig(config().getObjectMapperConfig()
+				.logConfig(logConfig()
+						.enableLoggingOfRequestAndResponseIfValidationFails())
+				.objectMapperConfig(objectMapperConfig()
 						.jackson2ObjectMapperFactory((cls, charset) -> objectMapper))
 				.sslConfig(sslConfig()
 						.relaxedHTTPSValidation()
