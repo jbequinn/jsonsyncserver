@@ -1,0 +1,15 @@
+micronaut:
+  application:
+    name: jsonsyncserver
+  server:
+    port: 8086
+  ssl:
+    enabled: true
+    buildSelfSigned: true
+
+application:
+  key: ABDEF123
+  mongo-host: localhost
+  mongo-port: 27017
+  mongo-username: root
+  mongo-password: mypassword

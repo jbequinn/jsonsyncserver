@@ -1,3 +1,0 @@
-GET
-https://192.168.1.12:8443/time/?key=ABCDEF
-HTTP/1.1

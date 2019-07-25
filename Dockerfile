@@ -1,18 +1,4 @@
-FROM adoptopenjdk/openjdk11-openj9:jdk-11.0.3_7_openj9-0.14.0-alpine-slim as build
-WORKDIR /workspace/app
-
-COPY mvnw .
-COPY .mvn .mvn
-COPY pom.xml .
-COPY src src
-
-RUN ./mvnw install -DskipTests
-RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
-
-FROM adoptopenjdk/openjdk11-openj9:jre-11.0.3_7_openj9-0.14.3-alpine
-VOLUME /tmp
-ARG DEPENDENCY=/workspace/app/target/dependency
-COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
-COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
-ENTRYPOINT ["java","-cp","app:app/lib/*","com.jbequinn.jsonsyncserver.JsonSyncServerApplication"]
+FROM adoptopenjdk/openjdk11-openj9:jdk-11.0.1.13-alpine-slim
+COPY target/jsonsyncserver2*.jar jsonsyncserver2.jar
+EXPOSE 8080
+CMD java -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -Dcom.sun.management.jmxremote -noverify ${JAVA_OPTS} -jar jsonsyncserver.jar
