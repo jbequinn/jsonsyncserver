@@ -5,9 +5,11 @@ import com.jbequinn.syncserver.domain.model.ChangesDto;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Indexes;
-import lombok.extern.flogger.Flogger;
 import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.inject.Singleton;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -22,8 +24,9 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static org.bson.Document.parse;
 
-@Flogger
 public class MongoRepository {
+	private Logger logger = LoggerFactory.getLogger(MongoRepository.class);
+
 	private final MongoCollection<Document> itemsCollection;
 	private final MongoCollection<Document> tagsCollection;
 	private final MongoCollection<Document> deletionsCollection;
@@ -65,7 +68,7 @@ public class MongoRepository {
 
 	private List<JsonObject> findInCollectionById(MongoCollection<Document> collection, List<String> ids) {
 		if (ids == null || ids.isEmpty()) {
-			log.atFine().log("No ids to find in the collection %s", collection.getNamespace().getCollectionName());
+			logger.info("No ids to find in the collection {}", collection.getNamespace().getCollectionName());
 			return List.of();
 		}
 
@@ -120,7 +123,7 @@ public class MongoRepository {
 
 	private void saveInCollection(MongoCollection<Document> collection, List<JsonObject> objects) {
 		if (objects == null || objects.isEmpty()) {
-			log.atFine().log("No elements to save in the collection %s", collection.getNamespace().getCollectionName());
+			logger.info("No elements to save in the collection {}", collection.getNamespace().getCollectionName());
 			return;
 		}
 		collection.insertMany(toDocuments(objects));
@@ -136,7 +139,7 @@ public class MongoRepository {
 
 	private void updateInCollection(MongoCollection<Document> collection, List<JsonObject> jsonObjects) {
 		if (jsonObjects == null || jsonObjects.isEmpty()) {
-			log.atFine().log("No elements to update in the collection %s", collection.getNamespace().getCollectionName());
+			logger.info("No elements to update in the collection {}", collection.getNamespace().getCollectionName());
 			return;
 		}
 
@@ -161,7 +164,7 @@ public class MongoRepository {
 
 	private void deleteInCollection(MongoCollection<Document> collection, List<String> ids) {
 		if (ids == null || ids.isEmpty()) {
-			log.atFine().log("No ids to delete in the collection %s", collection.getNamespace().getCollectionName());
+			logger.info("No ids to delete in the collection {}", collection.getNamespace().getCollectionName());
 			return;
 		}
 
@@ -200,9 +203,7 @@ public class MongoRepository {
 		try {
 			return objectMapper.readValue(document.toJson(), JsonObject.class);
 		} catch (IOException e) {
-			log.atSevere()
-					.withCause(e)
-					.log("Error when reading the Mongo document: %s", document);
+			logger.error("Error when reading the Mongo document: {}", document);
 			return JsonValue.EMPTY_JSON_OBJECT;
 		}
 	}

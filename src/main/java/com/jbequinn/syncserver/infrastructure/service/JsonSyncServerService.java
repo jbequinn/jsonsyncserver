@@ -2,8 +2,10 @@ package com.jbequinn.syncserver.infrastructure.service;
 
 import com.jbequinn.syncserver.domain.model.ChangesDto;
 import com.jbequinn.syncserver.infrastructure.repository.MongoRepository;
-import lombok.extern.flogger.Flogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.inject.Singleton;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 import java.time.Instant;
@@ -15,7 +17,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static com.google.common.flogger.LazyArgs.lazy;
 import static com.jbequinn.syncserver.infrastructure.service.JsonAccessor.getLongValueOrZero;
 import static java.util.concurrent.CompletableFuture.allOf;
 import static java.util.function.Function.identity;
@@ -23,8 +24,9 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static javax.json.Json.createObjectBuilder;
 
-@Flogger
 public class JsonSyncServerService {
+	private Logger logger = LoggerFactory.getLogger(JsonSyncServerService.class);
+
 	private final MongoRepository repository;
 	private final JsonObjectMerger merger;
 
@@ -34,8 +36,7 @@ public class JsonSyncServerService {
 	}
 
 	public JsonObject sync(JsonObject jsonObject) throws ExecutionException, InterruptedException, TimeoutException {
-		log.atFinest()
-				.log("Request body: %s", lazy(() -> jsonObject));
+		logger.debug("Request body: {}", jsonObject);
 
 		var lastSync = getLongValueOrZero(jsonObject, "last_sync_ts");
 
@@ -97,8 +98,7 @@ public class JsonSyncServerService {
 
 		var response = responseBuilder.build();
 
-		log.atFinest()
-				.log("Response body: %s", lazy(() -> response));
+		logger.debug("Response body: {}", response);
 
 		return response;
 	}

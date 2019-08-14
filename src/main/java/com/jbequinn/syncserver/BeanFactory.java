@@ -18,6 +18,7 @@ import java.util.List;
 
 @Factory
 public class BeanFactory {
+
 	@Singleton
 	ObjectMapper objectMapper() {
 		return new ObjectMapper()

@@ -1,17 +1,18 @@
 package com.jbequinn.syncserver.infrastructure.service;
 
-import lombok.extern.flogger.Flogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.inject.Singleton;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import java.util.Arrays;
-
-import static com.google.common.flogger.LazyArgs.lazy;
 import static com.jbequinn.syncserver.infrastructure.service.JsonAccessor.getLongValueOrZero;
 
-@Flogger
 public class JsonObjectMerger {
+
+	private Logger logger = LoggerFactory.getLogger(JsonObjectMerger.class);
 
 	private static final String[][] PROPERTIES = new String[][]{
 			// there are probably more fields that can be merged
@@ -24,10 +25,8 @@ public class JsonObjectMerger {
 	};
 
 	public JsonObject mergeItem(JsonObject one, JsonObject another) {
-		log.atFinest()
-				.log("Merging item: %s", lazy(() -> one));
-		log.atFinest()
-				.log("With the other item: %s", lazy(() -> another));
+		logger.debug("Merging item: {}", one);
+		logger.debug("With the other item: {}", another);
 
 		var base = getMostRecentOf(one, another);
 
@@ -62,7 +61,7 @@ public class JsonObjectMerger {
 		var timestampAnother = getLongValueOrZero(another, timestampKey);
 
 		builder.add(key, timestampOne > timestampAnother ? one.get(key) : another.get(key));
-		builder.add(timestampKey, timestampOne > timestampAnother ? timestampOne : timestampAnother);
+		builder.add(timestampKey, Math.max(timestampOne, timestampAnother));
 	}
 
 	private JsonObject getMostRecentOf(JsonObject one, JsonObject another) {
