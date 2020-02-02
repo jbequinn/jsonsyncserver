@@ -26,7 +26,7 @@ import static io.restassured.config.SSLConfig.sslConfig;
 @TestMethodOrder(MethodOrderer.Random.class)
 public abstract class ITBase {
 	static {
-		GenericContainer mongoContainer = new GenericContainer("mongo:4.0.10")
+		GenericContainer mongoContainer = new GenericContainer("mongo:4.2.3")
 				.withEnv("MONGO_INITDB_ROOT_USERNAME", "root")
 				.withEnv("MONGO_INITDB_ROOT_PASSWORD", "mypassword")
 				.withExposedPorts(27017);
