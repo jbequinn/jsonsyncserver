@@ -46,7 +46,7 @@ public abstract class ITBase {
 	protected int port;
 
 	protected RequestSpecification spec = new RequestSpecBuilder()
-			.setBaseUri("https://localhost")
+			.setBaseUri("https://0.0.0.0")
 			.addQueryParam("key", "ABCDEF")
 			.build();
 
