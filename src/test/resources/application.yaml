@@ -5,7 +5,6 @@ application:
   mongo-username: root
   mongo-password: mypassword
 
-
 quarkus:
   http:
     test-port: 8083
@@ -18,3 +17,11 @@ quarkus:
     credentials:
       username: ${application.mongo-username}
       password: ${application.mongo-password}
+  log:
+    console:
+      enable: true
+      format: "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
+      level: INFO
+      color: true
+    category:
+      "com.jbequinn": TRACE
