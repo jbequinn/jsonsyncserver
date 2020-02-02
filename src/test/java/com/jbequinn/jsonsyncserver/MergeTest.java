@@ -1,13 +1,12 @@
 package com.jbequinn.jsonsyncserver;
 
-import com.jbequinn.jsonsyncserver.infrastructure.service.JsonObjectMerger;
+import com.jbequinn.jsonsyncserver.service.JsonObjectMerger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import javax.json.Json;
-import javax.json.JsonValue;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

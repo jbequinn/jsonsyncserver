@@ -1,4 +1,4 @@
-package com.jbequinn.jsonsyncserver.infrastructure.service;
+package com.jbequinn.jsonsyncserver.service;
 
 import javax.json.JsonNumber;
 import javax.json.JsonObject;

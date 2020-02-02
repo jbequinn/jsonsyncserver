@@ -1,17 +1,17 @@
-package com.jbequinn.jsonsyncserver.infrastructure.service;
+package com.jbequinn.jsonsyncserver.service;
 
 import lombok.extern.flogger.Flogger;
-import org.springframework.stereotype.Component;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import java.util.Arrays;
 
 import static com.google.common.flogger.LazyArgs.lazy;
-import static com.jbequinn.jsonsyncserver.infrastructure.service.JsonAccessor.getLongValueOrZero;
+import static com.jbequinn.jsonsyncserver.service.JsonAccessor.getLongValueOrZero;
 
-@Component
+@ApplicationScoped
 @Flogger
 public class JsonObjectMerger {
 
@@ -64,7 +64,7 @@ public class JsonObjectMerger {
 		var timestampAnother = getLongValueOrZero(another, timestampKey);
 
 		builder.add(key, timestampOne > timestampAnother ? one.get(key) : another.get(key));
-		builder.add(timestampKey, timestampOne > timestampAnother ? timestampOne : timestampAnother);
+		builder.add(timestampKey, Math.max(timestampOne, timestampAnother));
 	}
 
 	private JsonObject getMostRecentOf(JsonObject one, JsonObject another) {

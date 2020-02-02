@@ -1,19 +1,19 @@
-package com.jbequinn.jsonsyncserver.infrastructure.repository;
+package com.jbequinn.jsonsyncserver.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jbequinn.jsonsyncserver.domain.model.ChangesDto;
+import com.jbequinn.jsonsyncserver.model.ChangesDto;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Indexes;
 import lombok.extern.flogger.Flogger;
 import org.bson.Document;
-import org.springframework.lang.NonNull;
-import org.springframework.stereotype.Repository;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static org.bson.Document.parse;
 
-@Repository
+@ApplicationScoped
 @Flogger
 public class MongoRepository {
 	private final MongoCollection<Document> itemsCollection;
@@ -68,7 +68,7 @@ public class MongoRepository {
 
 	private List<JsonObject> findInCollectionById(MongoCollection<Document> collection, List<String> ids) {
 		if (ids == null || ids.isEmpty()) {
-			log.atFine().log("No ids to find in the collection %s", collection.getNamespace().getCollectionName());
+			log.atFine().log("No ids to find in the collection %s", collection.getNamespace().getCollectionName());;
 			return List.of();
 		}
 
@@ -198,7 +198,7 @@ public class MongoRepository {
 				.collect(toList());
 	}
 
-	@NonNull
+	@NotNull
 	private JsonObject fromDocument(Document document) {
 		document.remove("_id");
 		try {

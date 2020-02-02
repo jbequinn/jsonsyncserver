@@ -5,26 +5,16 @@ application:
   mongo-username: root
   mongo-password: mypassword
 
-server:
-  ssl:
-    enabled: true
-    key-store: classpath:keystore.p12
-    key-store-password: changeit
-    key-password: changeit
-    key-alias: keystore
-  port: 8443
-  compression:
-    enabled: true
-    min-response-size: 1KB
 
-logging:
-  level:
-    com.jbequinn.jsonsyncserver: TRACE
-
-spring:
-  main:
-    lazy-initialization: true
-  jackson:
-    default-property-inclusion: non_null
-    deserialization:
-      fail-on-unknown-properties: false
+quarkus:
+  http:
+    test-port: 8083
+    test-ssl-port: 8444
+    ssl:
+      certificate:
+        key-store-file: keystore.p12
+        key-store-password: changeit
+  mongodb:
+    credentials:
+      username: ${application.mongo-username}
+      password: ${application.mongo-password}

@@ -5,26 +5,6 @@ application:
   mongo-username: ${mongo.username}
   mongo-password: ${mongo.password}
 
-server:
-  ssl:
-    enabled: true
-    key-store: classpath:keystore.p12
-    key-store-password: changeit
-    key-password: changeit
-    key-alias: keystore
-  port: 443
-  compression:
-    enabled: true
-    min-response-size: 1KB
-
 logging:
   level:
     com.jbequinn.jsonsyncserver: INFO
-
-spring:
-  main:
-    lazy-initialization: false
-  jackson:
-    default-property-inclusion: non_null
-    deserialization:
-      fail-on-unknown-properties: false

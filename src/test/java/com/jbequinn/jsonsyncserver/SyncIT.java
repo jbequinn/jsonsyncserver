@@ -1,50 +1,79 @@
 package com.jbequinn.jsonsyncserver;
 
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
+import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.time.Instant;
+import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.config.LogConfig.logConfig;
+import static io.restassured.config.RestAssuredConfig.config;
+import static io.restassured.config.SSLConfig.sslConfig;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SyncIT extends ITBase {
+@QuarkusTest
+public class SyncIT {
+	private final RequestSpecification spec = new RequestSpecBuilder()
+			.setBaseUri("https://0.0.0.0")
+			.setPort(8444)
+			.addQueryParam("key", "ABCDEF")
+			.setContentType(ContentType.JSON)
+			.build();
+
+	@BeforeAll
+	static void beforeAll() {
+		RestAssured.config = config()
+				.logConfig(logConfig()
+						.enableLoggingOfRequestAndResponseIfValidationFails())
+				.sslConfig(sslConfig()
+						.relaxedHTTPSValidation()
+						.allowAllHostnames());
+	}
+
 	@BeforeEach
-	void setUp() throws Exception {
+	void setUp() {
 		given()
 				.spec(spec)
-		.when()
+				.when()
 				.post("/wipe")
-		.then().assertThat()
+				.then().assertThat()
 				.statusCode(HTTP_OK);
 
 		given()
 				.spec(spec)
-				.body(ClassLoader.getSystemResourceAsStream("file-simple.json").readAllBytes())
-		.when()
+				.body(ClassLoader.getSystemResourceAsStream("file-simple.json"))
+				.when()
 				.post("/push")
-		.then().assertThat()
+				.then().assertThat()
 				.statusCode(HTTP_OK);
 	}
 
 	@Test
 	void unauthorizedRequest() {
 		RequestSpecification spec = new RequestSpecBuilder()
-				.setBaseUri("https://localhost")
-				.setPort(port)
-				.setBasePath("/")
+				.setBaseUri("https://0.0.0.0")
+				.setPort(8444)
 				.addQueryParam("key", "totally-wrong-token")
 				.addFilter(new ResponseLoggingFilter())
 				.addFilter(new RequestLoggingFilter())
@@ -52,9 +81,9 @@ public class SyncIT extends ITBase {
 
 		given()
 				.spec(spec)
-		.when()
+				.when()
 				.post("/pull")
-		.then().assertThat()
+				.then().assertThat()
 				.statusCode(HTTP_UNAUTHORIZED);
 	}
 
@@ -62,13 +91,13 @@ public class SyncIT extends ITBase {
 	void timeEndpoint() {
 		var before = Instant.now().toEpochMilli();
 
-		long time = given()
-					.spec(spec)
+		var time = given()
+				.spec(spec)
 				.when()
-					.get("/time")
+				.get("/time")
 				.then().assertThat()
-					.statusCode(HTTP_OK)
-					.extract().jsonPath().getLong("server_time_ms");
+				.statusCode(HTTP_OK)
+				.extract().jsonPath().getLong("server_time_ms");
 
 		assertThat(time).isBetween(before, Instant.now().toEpochMilli());
 	}
@@ -76,12 +105,12 @@ public class SyncIT extends ITBase {
 	@Test
 	void pullEndpoint() {
 		String responseString = given()
-					.spec(spec)
+				.spec(spec)
 				.when()
-					.post("/pull")
+				.post("/pull")
 				.then().assertThat()
-					.statusCode(HTTP_OK)
-					.extract().body().asString();
+				.statusCode(HTTP_OK)
+				.extract().body().asString();
 
 		JsonObject response;
 		try (var jsonReader = Json.createReader(new StringReader(responseString))) {
@@ -129,20 +158,20 @@ public class SyncIT extends ITBase {
 
 		// GIVEN a sync request object with no new data, and no previous synchronization timestamp
 		var responseString = given()
-					.spec(spec)
-					.body(Json.createObjectBuilder()
-							.add("last_sync_ts", "null")
-							.add("changes", Json.createObjectBuilder()
-									.add("items", JsonValue.EMPTY_JSON_ARRAY)
-									.add("tags", JsonValue.EMPTY_JSON_ARRAY)
-									.add("deletions", JsonValue.EMPTY_JSON_ARRAY)
-									.build())
-							.build().toString())
+				.spec(spec)
+				.body(Json.createObjectBuilder()
+						.add("last_sync_ts", "null")
+						.add("changes", Json.createObjectBuilder()
+								.add("items", JsonValue.EMPTY_JSON_ARRAY)
+								.add("tags", JsonValue.EMPTY_JSON_ARRAY)
+								.add("deletions", JsonValue.EMPTY_JSON_ARRAY)
+								.build())
+						.build().toString())
 				// WHEN performing the request
 				.when()
-					.post("/sync")
+				.post("/sync")
 				.then().assertThat()
-					.statusCode(HTTP_OK)
+				.statusCode(HTTP_OK)
 				.extract().body().asString();
 
 		JsonObject response;
@@ -207,10 +236,10 @@ public class SyncIT extends ITBase {
 								.build())
 						.build().toString())
 				.when()
-					.post("/sync")
+				.post("/sync")
 				.then().assertThat()
-					.statusCode(HTTP_OK)
-					.extract().body().asString();
+				.statusCode(HTTP_OK)
+				.extract().body().asString();
 
 		JsonObject response;
 		try (var jsonReader = Json.createReader(new StringReader(responseString))) {
@@ -261,10 +290,10 @@ public class SyncIT extends ITBase {
 						.build().toString())
 				// WHEN performing the request
 				.when()
-					.post("/sync")
+				.post("/sync")
 				.then().assertThat()
-					.statusCode(HTTP_OK)
-					.extract().body().asString();
+				.statusCode(HTTP_OK)
+				.extract().body().asString();
 
 		JsonObject response;
 		try (var jsonReader = Json.createReader(new StringReader(responseString))) {
@@ -308,12 +337,12 @@ public class SyncIT extends ITBase {
 		});
 
 		String responseString2 = given()
-					.spec(spec)
+				.spec(spec)
 				.when()
-					.post("/pull")
+				.post("/pull")
 				.then().assertThat()
-					.statusCode(HTTP_OK)
-					.extract().body().asString();
+				.statusCode(HTTP_OK)
+				.extract().body().asString();
 
 		JsonObject response2;
 		try (var jsonReader = Json.createReader(new StringReader(responseString2))) {
@@ -391,12 +420,12 @@ public class SyncIT extends ITBase {
 		});
 
 		String responseString2 = given()
-					.spec(spec)
+				.spec(spec)
 				.when()
-					.post("/pull")
+				.post("/pull")
 				.then().assertThat()
-					.statusCode(HTTP_OK)
-					.extract().body().asString();
+				.statusCode(HTTP_OK)
+				.extract().body().asString();
 
 		JsonObject response2;
 		try (var jsonReader = Json.createReader(new StringReader(responseString2))) {

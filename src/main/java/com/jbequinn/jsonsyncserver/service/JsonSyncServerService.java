@@ -1,12 +1,11 @@
-package com.jbequinn.jsonsyncserver.infrastructure.service;
+package com.jbequinn.jsonsyncserver.service;
 
-import com.jbequinn.jsonsyncserver.domain.model.ChangesDto;
-import com.jbequinn.jsonsyncserver.infrastructure.repository.MongoRepository;
+import com.jbequinn.jsonsyncserver.model.ChangesDto;
+import com.jbequinn.jsonsyncserver.repository.MongoRepository;
 import lombok.extern.flogger.Flogger;
-import org.springframework.stereotype.Service;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 import java.time.Instant;
 import java.util.List;
@@ -18,14 +17,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static com.google.common.flogger.LazyArgs.lazy;
-import static com.jbequinn.jsonsyncserver.infrastructure.service.JsonAccessor.getLongValueOrZero;
+import static com.jbequinn.jsonsyncserver.service.JsonAccessor.getLongValueOrZero;
 import static java.util.concurrent.CompletableFuture.allOf;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static javax.json.Json.createObjectBuilder;
 
-@Service
+@ApplicationScoped
 @Flogger
 public class JsonSyncServerService {
 	private final MongoRepository repository;

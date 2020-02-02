@@ -1,4 +1,4 @@
-package com.jbequinn.jsonsyncserver.domain.model;
+package com.jbequinn.jsonsyncserver.model;
 
 import lombok.Data;
 
