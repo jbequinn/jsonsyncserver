@@ -1,9 +1,5 @@
 application:
   key: ABCDEF
-  mongo-host: localhost
-  mongo-port: 27017
-  mongo-username: root
-  mongo-password: mypassword
 
 quarkus:
   http:
@@ -15,11 +11,10 @@ quarkus:
         key-store-password: changeit
   mongodb:
     credentials:
-      username: ${application.mongo-username}
-      password: ${application.mongo-password}
+      username: root
+      password: mypassword
   log:
     console:
-      enable: true
       format: "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
       level: INFO
       color: true

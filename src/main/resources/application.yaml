@@ -1,10 +1,22 @@
 application:
   key: ${api.key}
-  mongo-host: ${mongo.host:db}
-  mongo-port: ${mongo.port:27017}
-  mongo-username: ${mongo.username}
-  mongo-password: ${mongo.password}
 
-logging:
-  level:
-    com.jbequinn.jsonsyncserver: INFO
+quarkus:
+  http:
+    ssl:
+      certificate:
+        key-store-file: keystore.p12
+        key-store-password: changeit
+  resteasy:
+    gzip:
+      enabled: true
+  mongodb:
+    hosts: ${mongo.host:db}:${mongo.port:27017}
+    credentials:
+      username: ${mongo.username}
+      password: ${mongo.password}
+  log:
+    console:
+      format: "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
+      level: WARN
+      color: true
