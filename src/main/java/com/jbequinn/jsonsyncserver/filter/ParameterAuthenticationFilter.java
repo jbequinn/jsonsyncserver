@@ -18,10 +18,10 @@ import javax.ws.rs.ext.Provider;
 public class ParameterAuthenticationFilter implements ContainerRequestFilter {
 
 	@Inject
-	private JsonSyncServerProperties properties;
+	JsonSyncServerProperties properties;
 
 	@Context
-	private HttpServletRequest servletRequest;
+	HttpServletRequest servletRequest;
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) {
