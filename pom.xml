@@ -230,6 +230,13 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<artifactId>maven-scm-plugin</artifactId>
+				<version>1.11.2</version>
+				<configuration>
+					<tag>release-${project.version}</tag>
+				</configuration>
+			</plugin>
     </plugins>
   </build>
   <profiles>
@@ -266,4 +273,11 @@
       </properties>
     </profile>
   </profiles>
+
+	<scm>
+		<url>https://github.com/jbequinn/jsonsyncserver</url>
+		<connection>scm:git:https://github.com/jbequinn/jsonsyncserver.git</connection>
+		<developerConnection>scm:git:https://github.com/jbequinn/jsonsyncserver.git</developerConnection>
+	</scm>
+
 </project>
