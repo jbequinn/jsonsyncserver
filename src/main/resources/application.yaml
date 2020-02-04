@@ -3,20 +3,18 @@ application:
 
 quarkus:
   http:
+    ssl-port: 443
     ssl:
       certificate:
         key-store-file: keystore.p12
         key-store-password: changeit
+
   resteasy:
     gzip:
       enabled: true
+
   mongodb:
     hosts: ${mongo.host:db}:${mongo.port:27017}
     credentials:
       username: ${mongo.username}
       password: ${mongo.password}
-  log:
-    console:
-      format: "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
-      level: WARN
-      color: true

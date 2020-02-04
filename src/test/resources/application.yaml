@@ -9,14 +9,8 @@ quarkus:
       certificate:
         key-store-file: keystore.p12
         key-store-password: changeit
+
   mongodb:
     credentials:
       username: root
       password: mypassword
-  log:
-    console:
-      format: "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
-      level: INFO
-      color: true
-    category:
-      "com.jbequinn": TRACE
