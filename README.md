@@ -7,7 +7,7 @@ Synchronization service for [Everdo](https://everdo.net/). This can be considere
 version: "3.5"
 services:
   db:
-    image: mongo:4.0.10
+    image: mongo:4.2.3
     restart: unless-stopped
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
@@ -33,8 +33,6 @@ services:
       - api.key=my-everdo-key
       - mongo.username=root
       - mongo.password=mypassword
-      # uncomment to change the logging level
-      #- logging.level.com.jbequinn.jsonsyncserver=TRACE
     networks:
       - internal
 networks:
