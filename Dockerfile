@@ -1,12 +1,15 @@
 FROM openjdk:11.0-jdk-slim as build
 WORKDIR /workspace/app
 
-COPY mvnw .
-COPY .mvn .mvn
-COPY pom.xml .
+COPY gradlew .
+COPY gradle.properties .
+COPY build.gradle .
+COPY lombok.config .
+COPY settings.gradle .
+COPY gradle gradle
 COPY src src
 
-RUN ./mvnw package -DskipTests
+RUN ./gradlew assemble
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.1
 
