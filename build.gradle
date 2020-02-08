@@ -1,0 +1,58 @@
+plugins {
+	id 'java'
+	id 'io.quarkus'
+	id 'io.freefair.lombok' version "4.1.6"
+}
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+}
+
+dependencies {
+	implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+	implementation 'io.quarkus:quarkus-resteasy-jackson'
+	implementation 'io.quarkus:quarkus-jackson'
+	implementation 'io.quarkus:quarkus-config-yaml'
+	implementation 'io.quarkus:quarkus-hibernate-validator'
+	implementation 'io.quarkus:quarkus-mongodb-client'
+	implementation 'io.quarkus:quarkus-resteasy'
+	implementation "io.quarkus:quarkus-security-spi:$quarkusPlatformVersion"
+	implementation "io.quarkus:quarkus-resteasy-common-spi:$quarkusPlatformVersion"
+	implementation "io.quarkus:quarkus-undertow-deployment:$quarkusPlatformVersion"
+	implementation "io.quarkus:quarkus-jackson-spi:$quarkusPlatformVersion"
+	implementation "io.quarkus:quarkus-resteasy-server-common-spi:$quarkusPlatformVersion"
+	implementation "io.quarkus:quarkus-smallrye-health-spi:$quarkusPlatformVersion"
+
+	implementation ('com.fasterxml.jackson.datatype:jackson-datatype-jsr353') {
+		exclude group: 'javax.json', module: 'javax.json-api'
+	}
+	implementation 'jakarta.json:jakarta.json-api:1.1.6'
+	implementation 'org.glassfish:jakarta.json'
+
+	implementation 'com.google.flogger:flogger:0.4'
+	implementation 'com.google.flogger:flogger-slf4j-backend:0.4'
+	implementation 'com.google.flogger:flogger-system-backend:0.4'
+	implementation 'org.slf4j:slf4j-api'
+	implementation 'ch.qos.logback:logback-classic:1.2.3'
+	implementation 'ch.qos.logback:logback-core:1.2.3'
+
+	testImplementation 'io.quarkus:quarkus-junit5'
+	testImplementation 'io.rest-assured:rest-assured'
+	testImplementation 'org.testcontainers:testcontainers'
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation 'org.assertj:assertj-core'
+}
+
+group 'com.jbequinn'
+version '11-SNAPSHOT'
+
+compileJava {
+	options.compilerArgs << '-parameters'
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_11
+	targetCompatibility = JavaVersion.VERSION_11
+}
+
