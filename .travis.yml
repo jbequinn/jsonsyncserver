@@ -5,3 +5,4 @@ jdk:
 sudo: required
 services:
   - docker
+script: ./mvnw clean verify
