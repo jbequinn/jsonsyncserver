@@ -135,7 +135,7 @@
 
 			<plugin>
 				<artifactId>maven-scm-plugin</artifactId>
-				<version>1.11.2</version>
+				<version>1.11.3</version>
 				<configuration>
 					<tag>release-${project.version}</tag>
 				</configuration>
