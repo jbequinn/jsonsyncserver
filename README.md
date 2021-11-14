@@ -27,7 +27,7 @@ services:
     depends_on:
       - db
     ports:
-      - target: 443
+      - target: 8443
         published: 8443
     environment:
       - api.key=my-everdo-key
