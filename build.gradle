@@ -31,7 +31,7 @@ dependencies {
 	implementation 'org.glassfish:jakarta.json'
 
 	implementation 'com.google.flogger:flogger:0.5.1'
-	implementation 'com.google.flogger:flogger-slf4j-backend:0.5.1'
+	implementation 'com.google.flogger:flogger-slf4j-backend:0.7.2'
 	implementation 'com.google.flogger:flogger-system-backend:0.5.1'
 	implementation 'org.slf4j:slf4j-api'
 	implementation 'ch.qos.logback:logback-classic:1.2.3'
