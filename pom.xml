@@ -17,7 +17,7 @@
 		<revision>11-SNAPSHOT</revision>
 
 		<java.version>13</java.version>
-		<flogger.version>0.5.1</flogger.version>
+		<flogger.version>0.7.3</flogger.version>
 	</properties>
 
 	<dependencies>
