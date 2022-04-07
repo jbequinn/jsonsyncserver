@@ -27,7 +27,7 @@ dependencies {
 	implementation ('com.fasterxml.jackson.datatype:jackson-datatype-jsr353') {
 		exclude group: 'javax.json', module: 'javax.json-api'
 	}
-	implementation 'jakarta.json:jakarta.json-api:1.1.6'
+	implementation 'jakarta.json:jakarta.json-api:2.1.0'
 	implementation 'org.glassfish:jakarta.json'
 
 	implementation 'com.google.flogger:flogger:0.5.1'
